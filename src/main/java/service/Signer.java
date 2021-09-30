@@ -10,6 +10,7 @@ import ru.CryptoPro.JCP.ASN.PKIX1Explicit88.*;
 import ru.CryptoPro.JCP.JCP;
 import ru.CryptoPro.JCP.params.OID;
 import ru.CryptoPro.JCSP.JCSP;
+import ru.CryptoPro.reprov.RevCheck;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -24,7 +25,10 @@ import java.util.Date;
 public class Signer {
     private static final Logger log = LoggerFactory.getLogger(Signer.class);
 
-    public void initSecurityContext() {
+    public static void initSecurityContext() {
+        Security.addProvider(new JCSP());
+        Security.addProvider(new JCP());
+        Security.addProvider(new RevCheck());
     }
 
     public PrivateKeyContext getPrivateKey() throws Exception {

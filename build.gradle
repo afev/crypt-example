@@ -8,29 +8,39 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    flatDir {
+        dirs 'libs'
+    }
 }
 
+compileJava.options.fork = true
+compileJava.options.forkOptions.executable = 'c:/Program Files/Java/jdk-10.0.2/bin/javac'
+
 dependencies {
-    implementation(fileTree("$rootDir/libs") { include '*.jar' })
-    compile files ("c:/Program Files/Java/jdk1.8.0_301/jre/lib/ext/asn1rt.jar")
-    compile files ("c:/Program Files/Java/jdk1.8.0_301/jre/lib/ext/ASN1P.jar")
-    compile files ("c:/Program Files/Java/jdk1.8.0_301/jre/lib/ext/JCP.jar")
-    compile files ("c:/Program Files/Java/jdk1.8.0_301/jre/lib/ext/JCryptoP.jar")
-    compile files ("c:/Program Files/Java/jdk1.8.0_301/jre/lib/ext/JCSP.jar")
-    compile files ("c:/Program Files/Java/jdk1.8.0_301/jre/lib/ext/JCPRevCheck.jar")
-    compile files ("c:/Program Files/Java/jdk1.8.0_301/jre/lib/ext/JCPRevTools.jar")
-    compile files ("c:/Program Files/Java/jdk1.8.0_301/jre/lib/ext/JCPRequest.jar")
-    implementation 'org.projectlombok:lombok:1.18.18'
-    implementation 'org.slf4j:slf4j-api:1.7.25'
+    compileOnly(fileTree("$rootDir/libs") { include '*.jar' }) // java-csp-5.0.42119-A
+    compile 'org.projectlombok:lombok:1.18.18'
+    compile 'org.slf4j:slf4j-api:1.7.25'
 }
 
 jar {
     manifest {
         attributes(
-                'Main-Class': 'Application'
+                'Main-Class': 'Application',
+                'Class-Path': configurations.compileOnly.collect { 'lib/' + it.getName() }.join(' ')
         )
     }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
+
+task copyToLib(type: Copy) {
+    into "$buildDir/libs/lib"
+    from configurations.compile
+    from configurations.compileOnly
+}
+
+assemble.dependsOn(copyToLib)
 
 test {
     useJUnitPlatform()
