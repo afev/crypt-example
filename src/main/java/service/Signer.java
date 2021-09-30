@@ -30,7 +30,6 @@ public class Signer {
     }
 
     public PrivateKeyContext getPrivateKey() throws Exception {
-        initSecurityContext();
         String alias = "extAuth3";
         KeyStore keyStore = getKeyStore();
         java.security.cert.Certificate certificate = keyStore.getCertificate(alias);
@@ -184,7 +183,6 @@ public class Signer {
             essCertIDv2s.elements = new ESSCertIDv2[1];
             essCertIDv2s.elements[0] = essCertIDv2;
 
-            // Добавляем сам аттрибут.
             SigningCertificateV2 signingCertificateV2 = new SigningCertificateV2(essCertIDv2s);
             cms.signerInfos.elements[i].signedAttrs.elements[k].values.elements[0] = signingCertificateV2;
 
@@ -193,8 +191,6 @@ public class Signer {
             Asn1BerEncodeBuffer encBufSignedAttr = new Asn1BerEncodeBuffer();
             cms.signerInfos.elements[i].signedAttrs.encode(encBufSignedAttr);
             final byte[] hsign = encBufSignedAttr.getMsgCopy();
-            /*log.info("hsign length {}", hsign.length);
-            log.info("attrs {}", cms.signerInfos.elements[i].signedAttrs.elements.length);*/
 
             signature.initSign(keys[i]);
             signature.update(hsign);

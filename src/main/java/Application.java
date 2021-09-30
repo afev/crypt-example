@@ -4,8 +4,10 @@ import service.Signer;
 public class Application {
 
     public static void main(String[] args) throws Exception {
+        Signer signer = new Signer();
+        signer.initSecurityContext();
+
         for(int i = 0; i < 100; i++) {
-            Signer signer = new Signer();
             PrivateKeyContext privateKey = signer.getPrivateKey();
             byte[] bytes = signer.signPkcs7(privateKey);
             System.out.println("Signature created successfully, length = " + bytes.length);

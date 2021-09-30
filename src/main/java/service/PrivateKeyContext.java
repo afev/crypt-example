@@ -9,6 +9,16 @@ import java.security.cert.Certificate;
 public class PrivateKeyContext {
     private String error;
     private PrivateKey key;
+    private Certificate certificate;
+
+    public PrivateKeyContext(String error) {
+        this.error = error;
+    }
+
+    public PrivateKeyContext(PrivateKey key, Certificate certificate) {
+        this.key = key;
+        this.certificate = certificate;
+    }
 
     public String getError() {
         return error;
@@ -34,14 +44,4 @@ public class PrivateKeyContext {
         this.certificate = certificate;
     }
 
-    private Certificate certificate;
-
-    public PrivateKeyContext(String error) {
-        this.error = error;
-    }
-
-    public PrivateKeyContext(PrivateKey key, Certificate certificate) {
-        this.key = key;
-        this.certificate = certificate;
-    }
 }
