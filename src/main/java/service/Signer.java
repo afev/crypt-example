@@ -25,8 +25,6 @@ public class Signer {
     private static final Logger log = LoggerFactory.getLogger(Signer.class);
 
     public void initSecurityContext() {
-        Security.removeProvider(JCSP.PROVIDER_NAME);
-        Security.addProvider(new JCSP());
     }
 
     public PrivateKeyContext getPrivateKey() throws Exception {
@@ -46,9 +44,15 @@ public class Signer {
     public byte[] signPkcs7(PrivateKeyContext keyContext) {
         byte[] attachment;
         try (InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("file.txt")) {
-            attachment = resourceAsStream.readAllBytes();
+            int available = resourceAsStream.available();
+            attachment = new byte[available];
+            int read = resourceAsStream.read(attachment, 0, attachment.length);
             if (attachment.length == 0) {
                 log.debug("Document has an empty attachment, attachment.length == 0");
+                return new byte[0];
+            }
+            if (read != available) {
+                log.debug("Invalid size, attachment.length == " + available + " but read = " + read);
                 return new byte[0];
             }
             PrivateKey[] keys = new PrivateKey[1];
@@ -66,8 +70,8 @@ public class Signer {
     }
 
     private byte[] createHashCMSEx(byte[] content, PrivateKey[] keys, Certificate[] certs) throws Exception {
-        final var digestOid = JCP.GOST_DIGEST_2012_256_OID;
-        final var signOid = JCP.GOST_PARAMS_SIG_2012_256_KEY_OID;
+        final String digestOid = JCP.GOST_DIGEST_2012_256_OID;
+        final String signOid = JCP.GOST_PARAMS_SIG_2012_256_KEY_OID;
 
         //create hashCMS
         final ContentInfo all = new ContentInfo();

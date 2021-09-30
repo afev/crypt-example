@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group 'org.example'
@@ -11,11 +12,24 @@ repositories {
 
 dependencies {
     implementation(fileTree("$rootDir/libs") { include '*.jar' })
+    compile files ("c:/Program Files/Java/jdk1.8.0_301/jre/lib/ext/asn1rt.jar")
+    compile files ("c:/Program Files/Java/jdk1.8.0_301/jre/lib/ext/ASN1P.jar")
+    compile files ("c:/Program Files/Java/jdk1.8.0_301/jre/lib/ext/JCP.jar")
+    compile files ("c:/Program Files/Java/jdk1.8.0_301/jre/lib/ext/JCryptoP.jar")
+    compile files ("c:/Program Files/Java/jdk1.8.0_301/jre/lib/ext/JCSP.jar")
+    compile files ("c:/Program Files/Java/jdk1.8.0_301/jre/lib/ext/JCPRevCheck.jar")
+    compile files ("c:/Program Files/Java/jdk1.8.0_301/jre/lib/ext/JCPRevTools.jar")
+    compile files ("c:/Program Files/Java/jdk1.8.0_301/jre/lib/ext/JCPRequest.jar")
     implementation 'org.projectlombok:lombok:1.18.18'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     implementation 'org.slf4j:slf4j-api:1.7.25'
+}
 
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'Application'
+        )
+    }
 }
 
 test {
